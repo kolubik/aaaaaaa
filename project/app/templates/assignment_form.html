@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Журнал назначений</h2>
+{% if current_user.is_admin() %}
+    <a href="{{ url_for('main.add_assignment') }}" class="btn btn-primary mb-3">Добавить назначение</a>
+{% endif %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Дата</th>
+            <th>Сотрудник</th>
+            <th>Вид наряда</th>
+            <th>Количество</th>
+            <th>Примечание</th>
+            {% if current_user.is_admin() %}
+                <th>Действия</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for a in assignments %}
+        <tr>
+            <td>{{ a.id }}</td>
+            <td>{{ a.date }}</td>
+            <td>{{ a.employee.name }}</td>
+            <td>{{ a.duty_type.name }}</td>
+            <td>{{ a.quantity }}</td>
+            <td>{{ a.notes or '' }}</td>
+            {% if current_user.is_admin() %}
+                <td>
+                    <a href="{{ url_for('main.edit_assignment', id=a.id) }}" class="btn btn-sm btn-warning">Редактировать</a>
+                    <a href="{{ url_for('main.delete_assignment', id=a.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Вы уверены?')">Удалить</a>
+                </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Виды нарядов</h2>
+{% if current_user.is_admin() %}
+    <a href="{{ url_for('main.add_dutytype') }}" class="btn btn-primary mb-3">Добавить вид наряда</a>
+{% endif %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Коэффициент</th>
+            {% if current_user.is_admin() %}
+                <th>Действия</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for dt in dutytypes %}
+        <tr>
+            <td>{{ dt.id }}</td>
+            <td>{{ dt.name }}</td>
+            <td>{{ dt.coefficient }}</td>
+            {% if current_user.is_admin() %}
+                <td>
+                    <a href="{{ url_for('main.edit_dutytype', id=dt.id) }}" class="btn btn-sm btn-warning">Редактировать</a>
+                    <a href="{{ url_for('main.delete_dutytype', id=dt.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Вы уверены?')">Удалить</a>
+                </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

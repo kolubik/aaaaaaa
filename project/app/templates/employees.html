@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Сотрудники</h2>
+{% if current_user.is_admin() %}
+    <a href="{{ url_for('main.add_employee') }}" class="btn btn-primary mb-3">Добавить сотрудника</a>
+{% endif %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>ФИО</th>
+            <th>Должность</th>
+            {% if current_user.is_admin() %}
+                <th>Действия</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for emp in employees %}
+        <tr>
+            <td>{{ emp.id }}</td>
+            <td>{{ emp.name }}</td>
+            <td>{{ emp.position }}</td>
+            {% if current_user.is_admin() %}
+                <td>
+                    <a href="{{ url_for('main.edit_employee', id=emp.id) }}" class="btn btn-sm btn-warning">Редактировать</a>
+                    <a href="{{ url_for('main.delete_employee', id=emp.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Вы уверены?')">Удалить</a>
+                </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

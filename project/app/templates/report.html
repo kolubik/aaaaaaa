@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Отчёт по нарядам</h2>
+<form method="post" class="row g-3 mb-3">
+    {{ form.hidden_tag() }}
+    <div class="col-auto">
+        {{ form.start_date.label(class="form-label") }}
+        {{ form.start_date(class="form-control", type="date") }}
+    </div>
+    <div class="col-auto">
+        {{ form.end_date.label(class="form-label") }}
+        {{ form.end_date(class="form-control", type="date") }}
+    </div>
+    <div class="col-auto align-self-end">
+        <button type="submit" class="btn btn-primary">{{ form.submit.label.text }}</button>
+    </div>
+</form>
+
+{% if report_data is not none %}
+    <h3>Период с {{ start_date }} по {{ end_date }}</h3>
+    {% if current_user.is_admin() %}
+        <a href="{{ url_for('main.export_csv', start_date=start_date, end_date=end_date) }}" class="btn btn-success mb-3">Экспорт в CSV</a>
+    {% endif %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-sm">
+            <thead>
+                <tr>
+                    <th>Сотрудник / Вид наряда</th>
+                    {% for dt in dutytypes %}
+                        <th>{{ dt.name }}</th>
+                    {% endfor %}
+                    <th>Всего</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for emp in employees %}
+                <tr>
+                    <td>{{ emp.name }}</td>
+                    {% for dt in dutytypes %}
+                        <td>{{ report_data.get((emp.id, dt.id), 0) }}</td>
+                    {% endfor %}
+                    <td><strong>{{ emp_totals.get(emp.id, 0) }}</strong></td>
+                </tr>
+                {% endfor %}
+                <tr class="table-secondary">
+                    <td><strong>Всего</strong></td>
+                    {% for dt in dutytypes %}
+                        <td><strong>{{ duty_totals.get(dt.id, 0) }}</strong></td>
+                    {% endfor %}
+                    <td><strong>{{ emp_totals.values() | sum }}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Управление пользователями</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Имя пользователя</th>
+            <th>Роль</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.role }}</td>
+            <td>
+                {% if user.role == 'viewer' %}
+                    <a href="{{ url_for('admin.make_admin', id=user.id) }}" class="btn btn-sm btn-success">Назначить admin</a>
+                {% else %}
+                    <a href="{{ url_for('admin.remove_admin', id=user.id) }}" class="btn btn-sm btn-warning">Снять admin</a>
+                {% endif %}
+                <a href="{{ url_for('admin.delete_user', id=user.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Вы уверены?')">Удалить</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
